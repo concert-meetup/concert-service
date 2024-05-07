@@ -1,0 +1,42 @@
+﻿networks:
+  cm-backend:
+    driver: bridge
+
+services:
+  database:
+    container_name: concert.data
+    image: mysql:latest
+    ports:
+      - '3307:3306'
+    restart: always
+    networks: 
+      - cm-backend
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASS}'
+      MYSQL_PASSWORD: '${DB_PASS}'
+      MYSQL_USER: '${DB_USER}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+    volumes:
+      - cm_concert_data:/var/lib/mysql_data/data
+  
+  concert.api:
+    container_name: concert.api
+    image: concert.api
+    depends_on: 
+      - 'database'
+    restart: always
+    networks: 
+      - cm-backend
+    build:
+      context: .
+      dockerfile: concert.API/Dockerfile
+    ports:
+      - '5100:5100'
+      - '5101:5101'
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=concert.data;Port=3306;Database='${DB_DATABASE}';Uid='${DB_USER}';Pwd='${DB_PASS}';
+      - ASPNETCORE_URLS=http://+:5100
+
+volumes: 
+  cm_concert_data:
+    
