@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: change folder
+      run: cd ./concert.API
     - name: Build the Docker image
       run: docker build -t concert-service:latest .
     - name: Login to Docker hub
