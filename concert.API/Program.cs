@@ -18,7 +18,7 @@ builder.Services.AddScoped<IConcertRepository, ConcertRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
 
 // var connectionString = builder.Configuration.GetConnectionString("LocalConnection");
-var connectionString = builder.Configuration.GetConnectionString("DockerConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ConcertDbContext>(o =>
     o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
