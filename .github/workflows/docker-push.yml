@@ -13,13 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: change folder
-      run: cd ./concert.API
+    # - name: change folder
+    #   run: cd ./concert.API
     - name: Build the Docker image
       run: docker build -t concert-service:latest .
     - name: Login to Docker hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
     - name: Tag Docker image
-      run: docker tag docker-test:latest "${{ secrets.DOCKER_USERNAME }}"/concert-meetup:latest
+      run: docker tag concert-service:latest "${{ secrets.DOCKER_USERNAME }}"/concert-meetup:latest
     - name: Push Docker image
       run: docker push "${{ secrets.DOCKER_USERNAME }}"/concert-meetup:latest
