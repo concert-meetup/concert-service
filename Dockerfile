@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["concert.API/concert.API.csproj", "concert.API/"]
 RUN dotnet restore "concert.API/concert.API.csproj"
 COPY . .
-#WORKDIR "/src/concert.API"
+WORKDIR "/src/concert.API"
 RUN dotnet build "concert.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
