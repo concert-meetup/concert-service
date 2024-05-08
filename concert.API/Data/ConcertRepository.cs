@@ -24,6 +24,8 @@ public class ConcertRepository : IConcertRepository
         // TODO add pagination
         return await _context.Concerts
             .Include(c => c.Venue)
+            .Where(c => c.ConcertDate >= DateTime.Today)
+            .OrderBy(c => c.ConcertDate)
             .ToListAsync();
     }
 

@@ -29,7 +29,7 @@ services:
       - cm-backend
     build:
       context: .
-      dockerfile: concert.API/Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - '5100:5100'
       - '5101:5101'
