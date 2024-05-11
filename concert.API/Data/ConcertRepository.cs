@@ -19,13 +19,47 @@ public class ConcertRepository : IConcertRepository
         _context.Concerts.Add(concert);
     }
 
-    public async Task<IEnumerable<Concert>> GetAll()
+    public async Task<IEnumerable<Concert>> GetAll(int skip, int pageSize, string searchQuery)
     {
-        // TODO add pagination
+        // TODO update pagination to keyset for better performance
+
+        var query = _context.Concerts.AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            query = query.Where(c => c.Artist.Contains(searchQuery));
+        }
+        else
+        {
+            query = query.Where(c => c.ConcertDate >= DateTime.Today);
+        }
+        
+        // return await _context.Concerts
+        //     .Include(c => c.Venue)
+        //     .Where(c => c.ConcertDate >= DateTime.Today)
+        //     .OrderBy(c => c.ConcertDate)
+        //     .Skip(skip)
+        //     .Take(pageSize)
+        //     .ToListAsync();
+
+        var concerts = await query
+            .Include(c => c.Venue)
+            .OrderBy(c => c.ConcertDate)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return concerts;
+    }
+
+    public async Task<IEnumerable<Concert>> GetConcertsByName(int skip, int pageSize, string searchQuery)
+    {
         return await _context.Concerts
             .Include(c => c.Venue)
-            .Where(c => c.ConcertDate >= DateTime.Today)
+            .Where(c => c.Artist == searchQuery)
             .OrderBy(c => c.ConcertDate)
+            .Skip(skip)
+            .Take(pageSize)
             .ToListAsync();
     }
 
