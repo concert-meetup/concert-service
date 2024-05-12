@@ -88,12 +88,12 @@ public class ConcertServiceTest
             Concerts = new HashSet<ConcertSummaryDTO> { new ConcertSummaryDTO(), new ConcertSummaryDTO() }
         };
 
-        _mockConcertRepo.Setup(r => r.GetAll()).ReturnsAsync(expectedConcerts);
+        _mockConcertRepo.Setup(r => r.GetAll(1, 1, "search")).ReturnsAsync(expectedConcerts);
         _mockMapper.Setup(m => m.Map<IEnumerable<ConcertSummaryDTO>>(It.IsAny<IEnumerable<Concert>>()))
             .Returns(expectedResponse.Concerts);
         
         // act
-        var result = await _concertService.GetAllConcerts();
+        var result = await _concertService.GetAllConcerts(1, 1, "search");
 
         // assert
         Assert.IsInstanceOfType<GetConcertsResponseDTO>(result);

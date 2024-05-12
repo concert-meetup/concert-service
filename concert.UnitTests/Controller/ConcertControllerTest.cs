@@ -55,7 +55,7 @@ public class ConcertControllerTest
     {
         // arrange
         var expectedResponse = new GetConcertsResponseDTO { };
-        _mockConcertService.Setup(s => s.GetAllConcerts()).ReturnsAsync(expectedResponse);
+        _mockConcertService.Setup(s => s.GetAllConcerts(1, 1, "search")).ReturnsAsync(expectedResponse);
         
         // act
         var result = await _controller.GetConcerts() as OkObjectResult;
