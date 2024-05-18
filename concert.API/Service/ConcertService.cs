@@ -51,7 +51,7 @@ public class ConcertService : IConcertService
             await SaveVenue(venue);
         }
 
-        venue = await _venueRepository.GetVenueByName(request.VenueName);
+        venue = (await _venueRepository.GetVenueByName(request.VenueName))!;
 
         Concert newConcert = new Concert
         {
@@ -95,18 +95,6 @@ public class ConcertService : IConcertService
         return new GetConcertsResponseDTO
         {
             Concerts = new HashSet<ConcertSummaryDTO>(concertSummaryDtOs)
-        };
-    }
-
-    public async Task<GetConcertsResponseDTO> GetConcertsByName(int page, int pageSize, string searchQuery)
-    {
-        int skip = (page - 1) * pageSize;
-
-        var concertsByName = await _concertRepository.GetConcertsByName(skip, pageSize, searchQuery);
-        var concertSummaryDtos = _mapper.Map<IEnumerable<ConcertSummaryDTO>>(concertsByName);
-        return new GetConcertsResponseDTO
-        {
-            Concerts = new HashSet<ConcertSummaryDTO>(concertSummaryDtos)
         };
     }
 

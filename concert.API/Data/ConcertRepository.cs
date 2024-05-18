@@ -33,14 +33,6 @@ public class ConcertRepository : IConcertRepository
         {
             query = query.Where(c => c.ConcertDate >= DateTime.Today);
         }
-        
-        // return await _context.Concerts
-        //     .Include(c => c.Venue)
-        //     .Where(c => c.ConcertDate >= DateTime.Today)
-        //     .OrderBy(c => c.ConcertDate)
-        //     .Skip(skip)
-        //     .Take(pageSize)
-        //     .ToListAsync();
 
         var concerts = await query
             .Include(c => c.Venue)
@@ -50,17 +42,6 @@ public class ConcertRepository : IConcertRepository
             .ToListAsync();
 
         return concerts;
-    }
-
-    public async Task<IEnumerable<Concert>> GetConcertsByName(int skip, int pageSize, string searchQuery)
-    {
-        return await _context.Concerts
-            .Include(c => c.Venue)
-            .Where(c => c.Artist == searchQuery)
-            .OrderBy(c => c.ConcertDate)
-            .Skip(skip)
-            .Take(pageSize)
-            .ToListAsync();
     }
 
     public async Task<Concert?> GetById(int id)

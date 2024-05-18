@@ -47,18 +47,6 @@ public class ConcertController : ControllerBase
         
         return Ok(await _concertService.GetAllConcerts(page, pageSize, searchQuery));
     }
-    
-    [HttpGet("search")]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetConcerts(string artist, int page = 1, int pageSize = 15, string searchQuery = null)
-    {
-        if (page <= 0 || pageSize <= 0)
-        {
-            return BadRequest($"{nameof(page)} and {nameof(pageSize)} size must be greater than 0.");
-        }
-        
-        return Ok(await _concertService.GetConcertsByName(page, pageSize, searchQuery));
-    }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<ConcertInfoDTO>(StatusCodes.Status200OK)]
