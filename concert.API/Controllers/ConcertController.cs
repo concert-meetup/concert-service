@@ -1,5 +1,6 @@
 using concert.API.DTO;
 using concert.API.DTO.Request;
+using concert.API.DTO.Response;
 using concert.API.Service.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,9 +36,16 @@ public class ConcertController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetConcerts()
+    [ProducesResponseType<GetConcertsResponseDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetConcerts(int page = 1, int pageSize = 15, string searchQuery = null)
     {
-        return Ok(await _concertService.GetAllConcerts());
+        if (page <= 0 || pageSize <= 0)
+        {
+            return BadRequest($"{nameof(page)} and {nameof(pageSize)} size must be greater than 0.");
+        }
+        
+        return Ok(await _concertService.GetAllConcerts(page, pageSize, searchQuery));
     }
 
     [HttpGet("{id:int}")]

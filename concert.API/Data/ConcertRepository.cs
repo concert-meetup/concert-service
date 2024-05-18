@@ -19,14 +19,29 @@ public class ConcertRepository : IConcertRepository
         _context.Concerts.Add(concert);
     }
 
-    public async Task<IEnumerable<Concert>> GetAll()
+    public async Task<IEnumerable<Concert>> GetAll(int skip, int pageSize, string searchQuery)
     {
-        // TODO add pagination
-        return await _context.Concerts
+        // TODO update pagination to keyset for better performance
+
+        var query = _context.Concerts.AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            query = query.Where(c => c.Artist.Contains(searchQuery));
+        }
+        else
+        {
+            query = query.Where(c => c.ConcertDate >= DateTime.Today);
+        }
+
+        var concerts = await query
             .Include(c => c.Venue)
-            .Where(c => c.ConcertDate >= DateTime.Today)
             .OrderBy(c => c.ConcertDate)
+            .Skip(skip)
+            .Take(pageSize)
             .ToListAsync();
+
+        return concerts;
     }
 
     public async Task<Concert?> GetById(int id)

@@ -33,7 +33,7 @@ public class ConcertService : IConcertService
 
         if (string.IsNullOrEmpty(request.ImageUrl))
         {
-            request.ImageUrl = "default image url";
+            request.ImageUrl = "https://cmblob66.blob.core.windows.net/images/pexels-vishnurnair-1105666.jpg";
         }
 
         Venue venue;
@@ -51,7 +51,7 @@ public class ConcertService : IConcertService
             await SaveVenue(venue);
         }
 
-        venue = await _venueRepository.GetVenueByName(request.VenueName);
+        venue = (await _venueRepository.GetVenueByName(request.VenueName))!;
 
         Concert newConcert = new Concert
         {
@@ -86,9 +86,11 @@ public class ConcertService : IConcertService
         return venue;
     }
 
-    public async Task<GetConcertsResponseDTO> GetAllConcerts()
+    public async Task<GetConcertsResponseDTO> GetAllConcerts(int page, int pageSize, string searchQuery)
     {
-        var concerts = await _concertRepository.GetAll();
+        int skip = (page - 1) * pageSize;
+        
+        var concerts = await _concertRepository.GetAll(skip, pageSize, searchQuery);
         var concertSummaryDtOs = _mapper.Map<IEnumerable<ConcertSummaryDTO>>(concerts);
         return new GetConcertsResponseDTO
         {
