@@ -3,6 +3,7 @@ using concert.API.Data.Abstractions;
 using concert.API.DTO;
 using concert.API.DTO.Request;
 using concert.API.DTO.Response;
+using concert.API.IntegrationEvents;
 using concert.API.Models;
 using concert.API.Service;
 using Moq;
@@ -15,6 +16,7 @@ public class ConcertServiceTest
     private Mock<IConcertRepository> _mockConcertRepo;
     private Mock<IVenueRepository> _mockVenueRepo;
     private Mock<IMapper> _mockMapper;
+    private Mock<IEventBus> _mockEventBus;
 
     private ConcertService _concertService;
 
@@ -24,8 +26,9 @@ public class ConcertServiceTest
         _mockConcertRepo = new Mock<IConcertRepository>();
         _mockVenueRepo = new Mock<IVenueRepository>();
         _mockMapper = new Mock<IMapper>();
+        _mockEventBus = new Mock<IEventBus>();
 
-        _concertService = new ConcertService(_mockConcertRepo.Object, _mockVenueRepo.Object, _mockMapper.Object);
+        _concertService = new ConcertService(_mockConcertRepo.Object, _mockVenueRepo.Object, _mockMapper.Object, _mockEventBus.Object);
     }
 
     [TestMethod]
