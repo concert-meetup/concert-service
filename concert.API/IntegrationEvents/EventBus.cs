@@ -38,6 +38,8 @@ public class EventBus : IEventBus
             _logger.LogInformation($"{@event.GetType().Name} with id {@event.Id} is ready");
             _logger.LogInformation($"Routing key: {routingKey}");
             
+            _logger.LogInformation(@event.ToString());
+            
             channel.BasicPublish(exchange: ExchangeName, 
                 routingKey: routingKey, 
                 mandatory: true, 
@@ -55,6 +57,9 @@ public class EventBus : IEventBus
 
     private byte[] SerialiseMessage(IntegrationEvent @event)
     {
-        return JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType()); 
+        return JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }); 
     }
 }
