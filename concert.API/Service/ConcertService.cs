@@ -3,6 +3,8 @@ using concert.API.Data.Abstractions;
 using concert.API.DTO;
 using concert.API.DTO.Request;
 using concert.API.DTO.Response;
+using concert.API.IntegrationEvents;
+using concert.API.IntegrationEvents.Events;
 using concert.API.Models;
 using concert.API.Service.Abstractions;
 
@@ -13,13 +15,16 @@ public class ConcertService : IConcertService
     private readonly IConcertRepository _concertRepository;
     private readonly IVenueRepository _venueRepository;
 
+    private IEventBus _eventBus;
+
     private readonly IMapper _mapper;
 
-    public ConcertService(IConcertRepository concertRepository, IVenueRepository venueRepository, IMapper mapper)
+    public ConcertService(IConcertRepository concertRepository, IVenueRepository venueRepository, IMapper mapper, IEventBus eventBus)
     {
         _concertRepository = concertRepository;
         _venueRepository = venueRepository;
         _mapper = mapper;
+        _eventBus = eventBus;
     }
 
     public async Task<CreateConcertResponseDTO> CreateConcert(CreateConcertRequestDTO request)
@@ -65,6 +70,10 @@ public class ConcertService : IConcertService
         };
 
         Concert savedConcert = await SaveConcert(newConcert);
+        
+        NewConcertCreatedIntegrationEvent @event =
+            new NewConcertCreatedIntegrationEvent(savedConcert.Id, savedConcert.Artist, savedConcert.Venue.Name);
+        await _eventBus.PublishAsync(@event);
 
         return new CreateConcertResponseDTO
         {

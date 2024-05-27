@@ -1,5 +1,6 @@
 ﻿networks:
-  cm-backend:
+  cm-backend-network:
+    external: true
     driver: bridge
 
 services:
@@ -10,7 +11,7 @@ services:
       - '3307:3306'
     restart: always
     networks: 
-      - cm-backend
+      - cm-backend-network
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASS}'
       MYSQL_PASSWORD: '${DB_PASS}'
@@ -26,7 +27,7 @@ services:
       - 'database'
     restart: always
     networks: 
-      - cm-backend
+      - cm-backend-network
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -36,6 +37,18 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Server=concert.data;Port=3306;Database='${DB_DATABASE}';Uid='${DB_USER}';Pwd='${DB_PASS}';
       - ASPNETCORE_URLS=http://+:5100
+    
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: "rabbitmq:3-management"
+    networks:
+      - cm-backend-network
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
 
 volumes: 
   cm_concert_data:

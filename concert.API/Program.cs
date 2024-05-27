@@ -1,5 +1,6 @@
 using concert.API.Data;
 using concert.API.Data.Abstractions;
+using concert.API.IntegrationEvents;
 using concert.API.Service;
 using concert.API.Service.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,11 @@ builder.Services.AddScoped<IConcertService, ConcertService>();
 
 builder.Services.AddScoped<IConcertRepository, ConcertRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+
+builder.Services.AddScoped<IEventBus, EventBus>();
+// builder.Services.AddScoped<IEventBus, RabbitMQTest>();
+
+// builder.Services.AddHostedService<RabbitMQTest>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ConcertDbContext>(o =>
@@ -46,6 +52,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8000"));
+// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8000"));
+// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://kind-sea-0cfd9c303.5.azurestaticapps.net"));
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.Run();
