@@ -8,21 +8,18 @@ public class EventBus : IEventBus
 {
     private const string ExchangeName = "cm_event_bus";
 
-    private readonly IConfiguration _configuration;
     private readonly ILogger<EventBus> _logger;
     private IConnection _connection;
     
-    public EventBus(ILogger<EventBus> logger, IConfiguration configuration)
+    public EventBus(ILogger<EventBus> logger)
     {
         _logger = logger;
-        _configuration = configuration;
     }
 
     public async Task PublishAsync(IntegrationEvent @event)
     {
         var routingKey = @event.GetType().Name;
         
-        // var factory = new ConnectionFactory() { Uri = new Uri(_configuration.GetConnectionString("RabbitMQContext"))};
         var factory = new ConnectionFactory() { HostName = "rabbitmq" };
         _connection = factory.CreateConnection();
 
