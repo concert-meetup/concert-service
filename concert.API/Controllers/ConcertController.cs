@@ -56,4 +56,10 @@ public class ConcertController : ControllerBase
         var concert = await _concertService.GetConcertById(id);
         return concert == null ? NotFound() : Ok(concert);
     }
+
+    [HttpGet("/test")]
+    public string Test()
+    {
+        return "Test from aks :)";
+    }
 }

@@ -6,6 +6,7 @@ using concert.API.DTO.Response;
 using concert.API.IntegrationEvents;
 using concert.API.Models;
 using concert.API.Service;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace concert.UnitTests.Service;
@@ -17,6 +18,7 @@ public class ConcertServiceTest
     private Mock<IVenueRepository> _mockVenueRepo;
     private Mock<IMapper> _mockMapper;
     private Mock<IEventBus> _mockEventBus;
+    private Mock<ILogger<ConcertService>> _mockLogger;
 
     private ConcertService _concertService;
 
@@ -27,8 +29,9 @@ public class ConcertServiceTest
         _mockVenueRepo = new Mock<IVenueRepository>();
         _mockMapper = new Mock<IMapper>();
         _mockEventBus = new Mock<IEventBus>();
+        _mockLogger = new Mock<ILogger<ConcertService>>();
 
-        _concertService = new ConcertService(_mockConcertRepo.Object, _mockVenueRepo.Object, _mockMapper.Object, _mockEventBus.Object);
+        _concertService = new ConcertService(_mockConcertRepo.Object, _mockVenueRepo.Object, _mockMapper.Object, _mockEventBus.Object, _mockLogger.Object);
     }
 
     [TestMethod]

@@ -14,17 +14,18 @@ public class ConcertService : IConcertService
 {
     private readonly IConcertRepository _concertRepository;
     private readonly IVenueRepository _venueRepository;
-
-    private IEventBus _eventBus;
+    private readonly IEventBus _eventBus;
 
     private readonly IMapper _mapper;
+    private readonly ILogger<ConcertService> _logger;
 
-    public ConcertService(IConcertRepository concertRepository, IVenueRepository venueRepository, IMapper mapper, IEventBus eventBus)
+    public ConcertService(IConcertRepository concertRepository, IVenueRepository venueRepository, IMapper mapper, IEventBus eventBus, ILogger<ConcertService> logger)
     {
         _concertRepository = concertRepository;
         _venueRepository = venueRepository;
         _mapper = mapper;
         _eventBus = eventBus;
+        _logger = logger;
     }
 
     public async Task<CreateConcertResponseDTO> CreateConcert(CreateConcertRequestDTO request)
@@ -70,10 +71,17 @@ public class ConcertService : IConcertService
         };
 
         Concert savedConcert = await SaveConcert(newConcert);
-        
-        NewConcertCreatedIntegrationEvent @event =
-            new NewConcertCreatedIntegrationEvent(savedConcert.Id, savedConcert.Artist, savedConcert.Venue.Name);
-        await _eventBus.PublishAsync(@event);
+
+        try
+        {
+            NewConcertCreatedIntegrationEvent @event =
+                new NewConcertCreatedIntegrationEvent(savedConcert.Id, savedConcert.Artist, savedConcert.Venue.Name);
+            await _eventBus.PublishAsync(@event);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not publish event");
+        }
 
         return new CreateConcertResponseDTO
         {
