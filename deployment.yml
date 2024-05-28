@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: concert-service
-        image: estherw66/concert-meetup:latest
+        image: estherw66/concert-service:latest
         ports:
           - containerPort: 5100
             name: http-web-api
