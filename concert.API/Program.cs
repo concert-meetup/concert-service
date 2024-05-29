@@ -23,7 +23,8 @@ builder.Services.AddScoped<IEventBus, EventBus>();
 
 // builder.Services.AddHostedService<RabbitMQTest>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? $"Server={Environment.GetEnvironmentVariable("DB_HOST")};Database={Environment.GetEnvironmentVariable("DB_NAME")};User Id={Environment.GetEnvironmentVariable("DB_USER")};Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
 builder.Services.AddDbContext<ConcertDbContext>(o =>
     o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
