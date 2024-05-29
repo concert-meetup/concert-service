@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: concert-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: concert-service
@@ -17,6 +17,29 @@ spec:
       containers:
       - name: concert-service
         image: estherw66/concert-service:latest
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DB_HOST
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DB_USER
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DB_PASSWORD
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DB_NAME
+          - name: ASPNETCORE_URLS
+            value: http://+:5100
         ports:
           - containerPort: 5100
             name: http-web-api
@@ -27,21 +50,6 @@ spec:
           limits:
             cpu: 200m
             memory: 200Mi
-        env:
-          - name: ASPNETCORE_URLS
-            value: http://+:5100
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 5100
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5100
-          initialDelaySeconds: 15
-          periodSeconds: 10
 
 ---
 
@@ -54,7 +62,6 @@ spec:
     app.kubernetes.io/name: concert-service
   ports:
     - name: concert-service-port
-      protocol: TCP
       port: 5100
       targetPort: 5100
   type: LoadBalancer

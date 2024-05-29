@@ -105,7 +105,7 @@ public class ConcertService : IConcertService
 
     public async Task<GetConcertsResponseDTO> GetAllConcerts(int page, int pageSize, string searchQuery)
     {
-        int skip = (page - 1) * pageSize;
+        var skip = (page - 1) * pageSize;
         
         var concerts = await _concertRepository.GetAll(skip, pageSize, searchQuery);
         var concertSummaryDtOs = _mapper.Map<IEnumerable<ConcertSummaryDTO>>(concerts);
