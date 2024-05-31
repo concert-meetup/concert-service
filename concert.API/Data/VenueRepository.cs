@@ -19,7 +19,7 @@ public class VenueRepository : IVenueRepository
         _context.Venues.Add(venue);
     }
 
-    public async Task<Venue?> GetVenueByName(string name)
+    public async Task<Venue> GetVenueByName(string name)
     {
         return await _context.Venues.FirstOrDefaultAsync(v => v.Name == name);
     }
