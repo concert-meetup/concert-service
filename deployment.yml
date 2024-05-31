@@ -56,12 +56,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: concert-service-lb
+  name: concert-service
 spec:
   selector:
     app.kubernetes.io/name: concert-service
   ports:
     - name: concert-service-port
+      protocol: TCP
       port: 5100
       targetPort: 5100
-  type: LoadBalancer

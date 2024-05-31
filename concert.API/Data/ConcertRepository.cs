@@ -44,7 +44,7 @@ public class ConcertRepository : IConcertRepository
         return concerts;
     }
 
-    public async Task<Concert?> GetById(int id)
+    public async Task<Concert> GetById(int id)
     {
         return await _context.Concerts
             .Include(c => c.Venue)
