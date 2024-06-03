@@ -25,7 +25,7 @@ builder.Services.AddScoped<IEventBus, EventBus>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? $"Server={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                       $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
+                       $"Database={Environment.GetEnvironmentVariable("DB_NAME_CONCERT")};" +
                        $"User Id={Environment.GetEnvironmentVariable("DB_USER")};" +
                        $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
 
