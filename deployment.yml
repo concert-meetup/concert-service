@@ -33,11 +33,11 @@ spec:
               secretKeyRef:
                 name: mysql-secret
                 key: DB_PASSWORD
-          - name: DB_NAME
+          - name: DB_NAME_CONCERT
             valueFrom:
               secretKeyRef:
                 name: mysql-secret
-                key: DB_NAME
+                key: DB_NAME_CONCERT
           - name: ASPNETCORE_URLS
             value: http://+:5100
         ports:
