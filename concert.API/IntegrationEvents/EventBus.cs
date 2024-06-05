@@ -20,7 +20,7 @@ public class EventBus : IEventBus
     {
         var routingKey = @event.GetType().Name;
         
-        var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+        var factory = new ConnectionFactory() { HostName = "rabbitmq-cm" };
         _connection = factory.CreateConnection();
 
         using var channel = _connection?.CreateModel() ??
