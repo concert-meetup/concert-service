@@ -20,7 +20,7 @@ public class EventBus : IEventBus
     {
         var routingKey = @event.GetType().Name;
         
-        var factory = new ConnectionFactory() { HostName = "rabbitmq-cm", UserName = "user", Password = "bitnami"};
+        var factory = new ConnectionFactory() { HostName = "rabbitmq", UserName = "user", Password = "AXivLKzSbR2yDupO"};
         _connection = factory.CreateConnection();
 
         using var channel = _connection?.CreateModel() ??
