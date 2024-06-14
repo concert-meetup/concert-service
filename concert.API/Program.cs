@@ -22,9 +22,6 @@ builder.Services.AddScoped<IConcertRepository, ConcertRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
 
 builder.Services.AddScoped<IEventBus, EventBus>();
-// builder.Services.AddScoped<IEventBus, RabbitMQTest>();
-
-// builder.Services.AddHostedService<RabbitMQTest>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? $"Server={Environment.GetEnvironmentVariable("DB_HOST")};" +
@@ -34,29 +31,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ConcertDbContext>(o =>
     o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-// builder.Services.AddAuthentication(options =>
-//     {
-//         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//     })
-//     .AddJwtBearer(jwt =>
-//     {
-//         var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
-//         jwt.SaveToken = true;
-//         jwt.TokenValidationParameters = new TokenValidationParameters()
-//         {
-//             ValidateIssuerSigningKey = true,
-//             IssuerSigningKey = new SymmetricSecurityKey(key),
-//             ValidateIssuer = true,
-//             ValidateAudience = true,
-//             RequireExpirationTime = false, // update for refresh token
-//             ValidateLifetime = true,
-//             ValidIssuer = "localhost",
-//             ValidAudience = "http://concert-meetup/api"
-//         };
-//     });
 
 builder.Services.AddCors();
 
@@ -83,8 +57,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:8000"));
-// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://kind-sea-0cfd9c303.5.azurestaticapps.net"));
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.Run();
