@@ -1,9 +1,12 @@
+using System.Text;
 using concert.API.Data;
 using concert.API.Data.Abstractions;
 using concert.API.IntegrationEvents;
 using concert.API.Service;
 using concert.API.Service.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,29 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ConcertDbContext>(o =>
     o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+// builder.Services.AddAuthentication(options =>
+//     {
+//         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//     })
+//     .AddJwtBearer(jwt =>
+//     {
+//         var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+//         jwt.SaveToken = true;
+//         jwt.TokenValidationParameters = new TokenValidationParameters()
+//         {
+//             ValidateIssuerSigningKey = true,
+//             IssuerSigningKey = new SymmetricSecurityKey(key),
+//             ValidateIssuer = true,
+//             ValidateAudience = true,
+//             RequireExpirationTime = false, // update for refresh token
+//             ValidateLifetime = true,
+//             ValidIssuer = "localhost",
+//             ValidAudience = "http://concert-meetup/api"
+//         };
+//     });
 
 builder.Services.AddCors();
 
@@ -62,3 +88,5 @@ app.MapControllers();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.Run();
+
+public partial class Program { }

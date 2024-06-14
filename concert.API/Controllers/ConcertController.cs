@@ -2,6 +2,7 @@ using concert.API.DTO;
 using concert.API.DTO.Request;
 using concert.API.DTO.Response;
 using concert.API.Service.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace concert.API.Controllers;
