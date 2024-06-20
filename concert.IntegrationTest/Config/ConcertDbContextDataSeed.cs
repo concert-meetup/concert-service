@@ -7,8 +7,6 @@ public static class ConcertDbContextDataSeed
 {
     public static void SeedTestData(ConcertDbContext context)
     {
-        context.Database.EnsureCreated();
-
         if (!context.Concerts.Any())
         {
             context.Concerts.AddRange(

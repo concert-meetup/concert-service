@@ -28,28 +28,29 @@ public class ConcertServiceWebAppFactory : WebApplicationFactory<Program>
         
             services.AddDbContext<ConcertDbContext>(options =>
             {
-                options.UseInMemoryDatabase("TestDatabase");
+                options.UseInMemoryDatabase("Test-Database");
             });
         
             var sp = services.BuildServiceProvider();
 
-            using var scope = sp.CreateScope();
-            var scopedServices = scope.ServiceProvider;
-            var db = scopedServices.GetRequiredService<ConcertDbContext>();
-        
-            db.Database.EnsureCreated();
-        
-            try
+            using (var scope = sp.CreateScope())
             {
-                ConcertDbContextDataSeed.SeedTestData(db);
-            }
-            catch (Exception ex)
-            {
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<ConcertServiceWebAppFactory>>();
+                var scopedServices = scope.ServiceProvider;
+                var db = scopedServices.GetRequiredService<ConcertDbContext>(); 
+                db.Database.EnsureCreated();
+
+                try
+                {
+                    ConcertDbContextDataSeed.SeedTestData(db);
+                }
+                catch (Exception ex)
+                {
+                    var logger = scopedServices
+                        .GetRequiredService<ILogger<ConcertServiceWebAppFactory>>();
         
-                logger.LogError(ex, "An error occurred seeding the " +
-                                    "database with test data. Error: {Message}", ex.Message);
+                    logger.LogError(ex, "An error occurred seeding the " +
+                                        "database with test data. Error: {Message}", ex.Message);
+                }
             }
         });
     }
