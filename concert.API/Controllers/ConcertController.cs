@@ -19,7 +19,6 @@ public class ConcertController : ControllerBase
     }
 
     [HttpPost]
-    // [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateConcert([FromBody] CreateConcertRequestDTO request)
@@ -27,7 +26,6 @@ public class ConcertController : ControllerBase
         try
         {
             var response = await _concertService.CreateConcert(request);
-            // var location = new Uri($"{Request.Scheme}://{Request.Host}/api/Concert/{response.Id}");
             return Ok(response);
         }
         catch (ArgumentException ex)
@@ -56,11 +54,5 @@ public class ConcertController : ControllerBase
     {
         var concert = await _concertService.GetConcertById(id);
         return concert == null ? NotFound() : Ok(concert);
-    }
-
-    [HttpGet("/test")]
-    public string Test()
-    {
-        return "Test from aks :)";
     }
 }

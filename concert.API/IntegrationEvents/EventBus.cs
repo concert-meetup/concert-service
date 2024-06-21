@@ -21,7 +21,7 @@ public class EventBus : IEventBus
         var routingKey = @event.GetType().Name;
         
         var factory = new ConnectionFactory() { HostName = "rabbitmq", UserName = "user", Password = "AXivLKzSbR2yDupO"};
-        // var factory = new ConnectionFactory() { HostName = "rabbitmq", UserName = "guest", Password = "guest", Port = 5672};
+        // var factory = new ConnectionFactory() { HostName = "rabbitmq", UserName = "guest", Password = "guest", Port = 5672}; // docker
         _connection = factory.CreateConnection();
 
         using var channel = _connection?.CreateModel() ??
