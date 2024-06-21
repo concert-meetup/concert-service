@@ -4,6 +4,14 @@ on:
   push:
     branches: ["main", "develop"]
 
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  CONTAINER_NAME: "concert-service:latest"
+  RESOURCE_GROUP: "cm"
+  CLUSTER_NAME: "cm-aks-cluster"
+  DEPLOYMENT_MANIFEST_PATH: "./deployment.yml"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -56,5 +64,68 @@ jobs:
         path: ./.sonar/scanner
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
+
+  docker-image:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: sonarcloud
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Login to Docker hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        
+      - name: Build Docker image
+        run: docker build -t "${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}" .
+
+      - name: Push Docker image to Docker hub
+        run: docker push "${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}"
+
+  deploy:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: docker-image
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          service-principal: ${{ secrets.AZURE_CLIENT_ID }}
+          service-principal-password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Deploy application
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+          images: |
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}
+      
+    
       
     
