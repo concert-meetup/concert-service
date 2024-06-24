@@ -65,6 +65,13 @@ jobs:
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
 
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@<action version> 
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: ./concert.API
+
   docker-image:
     permissions:
       contents: read
