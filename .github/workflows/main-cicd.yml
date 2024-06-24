@@ -83,8 +83,16 @@ jobs:
       uses: sonarsource/sonarcloud-github-action@v2.2.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/sonarcloud-scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # with:
-      #   projectBaseDir: ./concert.API
+      with:
+        projectBaseDir: ./concert.API
+        args: >
+          -Dsonar.organization=concert-meetup
+          -Dsonar.projectKey=concert-service
+          # -Dsonar.python.coverage.reportPaths=coverage.xml
+          # -Dsonar.sources=lib/
+          # -Dsonar.test.exclusions=tests/**
+          # -Dsonar.tests=tests/
+          # -Dsonar.verbose=true
 
   docker-image:
     permissions:
