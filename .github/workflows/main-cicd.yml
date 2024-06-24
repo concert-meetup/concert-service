@@ -95,6 +95,7 @@ jobs:
   #         # -Dsonar.verbose=true
 
   sonarcloud:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -122,6 +123,8 @@ jobs:
 
     - name: Run SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@v2.2.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
           -Dsonar.organization=concert-meetup
