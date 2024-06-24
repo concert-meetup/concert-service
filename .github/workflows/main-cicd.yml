@@ -128,7 +128,7 @@ jobs:
       with:
         args: >
           -Dsonar.organization=concert-meetup
-          -Dsonar.projectKey=concert-service
+          -Dsonar.projectKey=concert-meetup_concert-service
           -Dsonar.projectVersion=1.0
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./concert.API
