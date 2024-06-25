@@ -94,44 +94,56 @@ jobs:
   #         # -Dsonar.tests=tests/
   #         # -Dsonar.verbose=true
 
+  # sonarcloud:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+
+  #   - name: Setup JDK 17
+  #     uses: actions/setup-java@v3
+  #     with:
+  #       java-version: 17
+  #       distribution: 'zulu'
+
+  #   - name: Cache SonarCloud packages
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: ~/.sonar/cache
+  #       key: ${{ runner.os }}-sonar
+  #       restore-keys: ${{ runner.os }}-sonar
+
+  #   - name: Cache SonarCloud scanner
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: ./.sonar/scanner
+  #       key: ${{ runner.os }}-sonar-scanner
+  #       restore-keys: ${{ runner.os }}-sonar-scanner
+
+  #   - name: Run SonarCloud Scan
+  #     uses: sonarsource/sonarcloud-github-action@v2.2.0
+  #     env:
+  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     with:
+  #       args: >
+  #         -Dsonar.organization=concert-meetup
+  #         -Dsonar.projectKey=concert-meetup_concert-service
+  #         -Dsonar.projectVersion=1.0
+  #         -Dsonar.sourceEncoding=UTF-8
+  #         -Dsonar.sources=./concert.API
+
   sonarcloud:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup JDK 17
-      uses: actions/setup-java@v3
+    - uses: actions/checkout@v4
       with:
-        java-version: 17
-        distribution: 'zulu'
-
-    - name: Cache SonarCloud packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
-
-    - name: Cache SonarCloud scanner
-      uses: actions/cache@v3
-      with:
-        path: ./.sonar/scanner
-        key: ${{ runner.os }}-sonar-scanner
-        restore-keys: ${{ runner.os }}-sonar-scanner
-
-    - name: Run SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@v2.2.0
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v2.2.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/sonarcloud-scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.organization=concert-meetup
-          -Dsonar.projectKey=concert-meetup_concert-service
-          -Dsonar.projectVersion=1.0
-          -Dsonar.sourceEncoding=UTF-8
-          -Dsonar.sources=./concert.API
 
   docker-image:
     permissions:
